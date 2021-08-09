@@ -67,15 +67,28 @@
 					$img = imagecreatefrompng($image);
 					break;
 				case '.webm':
-					$vid = new webm($image);
-					if ($vid->valid_webm()) {
-						$img = $vid->frame();
+					$webmvid = new webm($image);
+					if ($webmvid->valid_webm()) {
+						$img = $webmvid->frame();
 						$imginfo = [
 							imagesx($img),
 							imagesy($img)
 						];
 					} else {
 						echo "Invalid WEBM";
+						return false;
+					}
+					break;
+				case '.mp4':
+					$mp4vid = new mp4($image);
+					if ($mp4vid->valid_mp4()) {
+						$img = $mp4vid->frame();
+						$imginfo = [
+							imagesx($img),
+							imagesy($img)
+						];
+					} else {
+						echo "Invalid MP4";
 						return false;
 					}
 					break;
@@ -104,6 +117,7 @@
 				case '.jpg':
 				case '.jpeg':
 				case '.webm':
+				case '.mp4':
 				case '.png':
 				case '.gif':
 					imagejpeg($thumbnail,"./".$this->thumbnail_path."/".$timage[0]."/".$thumbnail_name,95);
@@ -140,7 +154,7 @@
 				}
 			}
 
-			if (extension_loaded('imagick') && $ext != '.webm' && $ext != '.gif')
+			if (extension_loaded('imagick') && $ext != '.webm' && $ext != '.gif' && $ext != '.mp4')
 				return $this->imagick_thumbnail($image, $timage, $ext, $thumbnail_name, $imginfo);
 			else
 				return $this->gd_thumbnail($image, $timage, $ext, $thumbnail_name, $imginfo);
@@ -161,7 +175,7 @@
 			$count = count($ext);
 			$ext = $ext[$count-1];
 			$ext = strtolower($ext);
-			if($ext != "jpg" && $ext != "jpeg" && $ext != "gif" && $ext != "png" && $ext != "webm")
+			if($ext != "jpg" && $ext != "jpeg" && $ext != "gif" && $ext != "png" && $ext != "webm" && $ext != "mp4")
 				return false;
 			$ext = ".".$ext;
 			$valid_download = false;
@@ -291,7 +305,7 @@
 			$count = count($ext);
 			$ext = $ext[$count-1];
 			$ext = strtolower($ext);
-			if($ext != "jpg" && $ext != "jpeg" && $ext != "gif" && $ext != "png" && $ext != "webm") {
+			if($ext != "jpg" && $ext != "jpeg" && $ext != "gif" && $ext != "png" && $ext != "webm" && $ext != "mp4") {
 				echo "Invalid extension: .".$ext.".";
 				return false;
 			}
@@ -313,11 +327,26 @@
 				unlink("./tmp/".$fname.$ext);
 				return false;
 			}
-			if ($ext === ".webm")
+			if ($ext === ".mp4")
 			{
-				$vid = new webm("./tmp/".$fname.$ext);
-				if ($vid->valid_webm()) {
-					$img = $vid->frame();
+				$mp4vid = new mp4("./tmp/".$fname.$ext);
+				if ($mp4vid->valid_mp4()) {
+					$img = $mp4vid->frame();
+					$iinfo = [
+						imagesx($img),
+						imagesy($img)
+					];
+					$iinfo['mime'] = 'video/mp4';
+				} else {
+					echo "Invalid video file.";
+					return false;
+				}
+			}
+			elseif ($ext === ".webm")
+			{
+				$webmvid = new webm("./tmp/".$fname.$ext);
+				if ($webmvid->valid_webm()) {
+					$img = $webmvid->frame();
 					$iinfo = [
 						imagesx($img),
 						imagesy($img)
