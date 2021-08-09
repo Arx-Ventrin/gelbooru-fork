@@ -76,6 +76,9 @@
 			<div style="display: none; top: '.($retme['width']+$retme['y']+5).'px; left: '.$retme['x'].'px;" class="note-body" id="note-body-'.$retme['id'].'" title="Click to edit">'.$retme['body'].'</div>
 			';
 		}
+		if (preg_match("/\.mp4$/", $post_data['image']) == 1) {
+			echo '<video alt="video" id="video" loop controls preload src="f6ca1c7d5d00a2a3fb4ea2f7edfa0f96a6d09c11717f39facabad2d724f16fbb/images/'.$post_data['directory'].'/'.$post_data['image'].'" style="margin-right: 70px;"></video>';
+		}
 		if (preg_match("/\.webm$/", $post_data['image']) == 1) {
 			echo '<video alt="video" id="video" loop controls preload src="f6ca1c7d5d00a2a3fb4ea2f7edfa0f96a6d09c11717f39facabad2d724f16fbb/images/'.$post_data['directory'].'/'.$post_data['image'].'" style="margin-right: 70px;"></video>';
 		}
